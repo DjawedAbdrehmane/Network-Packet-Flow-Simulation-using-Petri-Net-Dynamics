@@ -9,8 +9,17 @@
  *  - Animated packet queue management
  */
 import { useState, useRef, useCallback, useEffect } from 'react';
+const getWsUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl) {
+    const wsProto = envUrl.startsWith('https') ? 'wss' : 'ws';
+    const cleanUrl = envUrl.replace(/^(https?:\/\/)/, '');
+    return `${wsProto}://${cleanUrl.replace(/\/$/, '')}/ws/simulate`;
+  }
+  return `ws://${window.location.hostname}:8000/ws/simulate`;
+};
 
-const WS_URL = `ws://${window.location.hostname}:8000/ws/simulate`;
+const WS_URL = getWsUrl();
 
 const initialPetriState = () => ({
   P0: 0,  // Source (always implied)
